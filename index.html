@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LoveSync - Для влюблённых пар</title>
+    <link rel="icon" type="image/png" href="logo.ico">
+    <link rel="stylesheet" href="style.css">
+    <base href="/">
+  </head>
+
+  <body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="authModalBody">
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" data-tab="login">Вход</button>
+            <button class="auth-tab-btn" data-tab="register">Регистрация</button>
+          </div>
+          
+          <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Пароль</label>
+              <input type="password" id="loginPassword" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="btn-primary">Войти</button>
+          </form>
+          
+          <form id="registerForm" class="auth-form">
+            <div class="form-group">
+              <label for="loginEmail">Имя</label>
+              <input type="text" id="registerName" autocomplete="name" required>
+            </div>
+            <div class="form-group">
+              <label for="registerEmail">Email</label>
+              <input type="email" id="registerEmail" autocomplete="username" required>
+            </div>
+            <div class="form-group">
+              <label for="registerPassword">Пароль</label>
+              <input type="password" id="registerPassword" autocomplete="new-password" required>
+            </div>
+            <div class="form-group">
+              <label for="registerPasswordConfirm">Подтвердите пароль</label>
+              <input type="password" id="registerPasswordConfirm" autocomplete="new-password" required>
+            </div>
+            <button type="submit" class="btn-primary">Зарегистрироваться</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Landing Page (shown when not authenticated) -->
+    <div id="landingPage" class="landing-container hidden">
+      <div class="landing-header">
+        <h1>LoveSync</h1>
+        <p>Сайт для влюблённых пар, который поможет вам укрепить отношения</p>
+      </div>
+      
+      <div class="landing-features">
+        <div class="feature-card">
+          <h3>💕 Вопросы дня</h3>
+          <p>Узнавайте друг друга лучше с ежедневными вопросами</p>
+        </div>
+        <div class="feature-card">
+          <h3>💌 Желания</h3>
+          <p>Записывайте мечты и желания каждого и общие</p>
+        </div>
+        <div class="feature-card">
+          <h3>📅 Календарь</h3>
+          <p>Отмечайте важные даты и события вашей пары</p>
+        </div>
+      </div>
+      
+      <div class="auth-buttons">
+        <button class="btn-primary" id="showLoginBtn">Войти</button>
+        <button class="btn-secondary" id="showRegisterBtn">Зарегистрироваться</button>
+      </div>
+    </div>
+
+    <!-- Main App (shown when authenticated) -->
+    <div id="app" class="hidden">
+      <!-- Header -->
+      <header class="header">
+        <div class="container">
+          <div class="nav-btn active" data-section="home">
+            <h1>
+              LoveSync
+            </h1>
+          </div>
+          <nav class="nav">
+            <button class="nav-btn" data-section="questions">❓ Вопрос</button>
+            <button class="nav-btn" data-section="calendar">🗓️ Календарь</button>
+            <button class="nav-btn" data-section="wishes">🎁 Желания</button>
+            <button class="nav-btn" data-section="games">👾 Игры</button>
+            <button class="nav-btn" data-section="profile">👤 Профиль</button>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="main">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+          <div class="container">
+            <div class="welcome-card">
+              <h2>Добро пожаловать в LoveSync!</h2>
+              <p>Ваше приложение для укрепления отношений</p>
+              
+              <div class="counters-grid">
+                <div class="counter-card">
+                  <h3>Дней вместе</h3>
+                  <div class="counter-value" id="daysCounter"></div>
+                </div>
+              </div>
+
+              <div class="love-reminder">
+                <button class="btn-primary" id="loveReminderBtn">💖 Помни, что я люблю тебя</button>
+              </div>
+            </div>
+          </div>
+
+        <div class="container">
+          <div class="memories-section">
+            <div class="section-header">
+              <h2>Альбом воспоминаний</h2>
+              <div class="memories-controls">
+                <button class="btn-primary" id="uploadMemoryBtn">Добавить фото</button>
+              </div>
+            </div>
+            
+            <div id="memoriesContainer" class="memories-container">
+              <!-- Фотографии будут загружены здесь автоматически -->
+            </div>
+          </div>
+        </div>
+
+        </section>
+
+        <section id="profile" class="section">
+          <div class="container">
+            <div class="section-header">
+              <h2>Мой профиль</h2>
+              <p>Управляйте вашими данными и настройками</p>
+            </div>
+            
+            <div class="profile-content">
+              <div class="profile-info">
+
+                <div class="profile-avatar">
+                  <img id="profileAvatarImg" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0yMCAyMXYtMmE0IDQgMCAwIDAtNC00SDhhNCA0IDAgMCAwLTQgNHYyIj48L3BhdGg+PGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ij48L2NpcmNsZT48L3N2Zz4=" alt="">
+                  <input type="file" id="avatarInput" accept="image/*" class="hidden-file-input">
+                  <button class="btn-secondary" onclick="document.getElementById('avatarInput').click()">Изменить фото</button>
+                </div>
+
+                <div class="profile-details">
+                  <div class="form-group">
+                    <label>Имя</label>
+                    <input type="text" id="profileNameInput" value="Имя">
+                  </div>
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="profileEmailInput" value="example@example.com" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label>Дата начала отношений</label>
+                    <input type="date" id="relationshipDateInput" value="2025-01-01">
+                  </div>
+                </div>
+              </div>
+              
+              <div class="partner-connection">
+                <h3 id="h3Part">Партнёр</h3>
+                
+                <!-- Если партнёр уже подключен -->
+                <div id="partnerConnected" class="hidden">
+                  <div class="partner-block">
+                    <div class="partner-avatar">
+                      <img id="partnerAvatarImg" src="..." alt="">
+                    </div>
+                    <div class="partner-info">
+                      <div class="partner-name" id="partnerNameDisplay">Елизавета</div>
+                    </div>
+                  </div>
+                  <button class="btn-secondary" id="disconnectPartner">Отключиться</button>
+                </div>
+                
+                <!-- Если партнёр не подключен -->
+                <div id="partnerNotConnected">
+                  <div class="form-group">
+                    <label>Ваш код приглашения</label>
+                    <div class="invite-code-container">
+                      <input type="text" id="userInviteCode" readonly>
+                      <button class="btn-secondary" id="generateInviteCode">Создать</button>
+                    </div>
+                    <p class="small-text">Дайте этот код вашему партнёру для подключения</p>
+                  </div>
+                  
+                  <div class="divider">ИЛИ</div>
+                  
+                  <div class="form-group">
+                    <label>Код приглашения партнёра</label>
+                    <input type="text" id="partnerInviteCode" placeholder="Введите 10-значный код">
+                    <button class="btn-primary" id="connectByCode">Подключиться</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="profile-actions">
+                <button class="btn-secondary back-to-my-profile hidden">← Назад к моему профилю</button>
+                <button class="btn-primary" id="saveProfileBtn">Сохранить изменения</button>
+                <button class="btn-secondary" id="logoutBtn">Выйти</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Questions Section -->
+        <section id="questions" class="section">
+          <div class="container">
+            <div class="section-header">
+              <h2>Ежедневные вопросы</h2>
+              <p>Узнавайте друг друга лучше каждый день</p>
+            </div>
+            
+            <div class="question-card">
+              <div class="question-text" id="dailyQuestion">
+                Что сегодня хорошего для тебя сделал партнёр?
+              </div>
+              <textarea id="questionAnswer" placeholder="Ваш ответ..."></textarea>
+              <button class="btn-primary" id="submitAnswer">Ответить</button>
+            </div>
+
+            <div class="question-history">
+              <div class="answers-tabs">
+                <button class="tab-btn active" data-tab="my-answers">Мои ответы</button>
+                <button class="tab-btn" data-tab="partner-answers">Ответы партнёра</button>
+                <button class="tab-btn" data-tab="all-answers">Все ответы</button>
+              </div>
+              
+              <div id="answersHistory" class="answers-list">
+                <!-- Answers will be added here -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Calendar Section -->
+        <section id="calendar" class="section">
+          <div class="container">
+            <div class="section-header">
+              <h2>Общий календарь</h2>
+              <p>Важные даты и события вашей пары</p>
+            </div>
+
+            <div class="calendar-container">
+              <div class="calendar-header">
+                <button id="prevMonth">&lt;</button>
+                <h3 id="currentMonth">Январь 2025</h3>
+                <button id="nextMonth">&gt;</button>
+              </div>
+              <div class="calendar-grid" id="calendarGrid">
+                <!-- Calendar will be generated here -->
+              </div>
+            </div>
+
+            <div class="events-list">
+              <h3>Предстоящие события</h3>
+              <div id="eventsList">
+                <!-- Events will be added here -->
+              </div>
+              <button class="btn-secondary" id="addEventBtn">Добавить событие</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Wishes Section -->
+        <section id="wishes" class="section">
+          <div class="container">
+            <div class="section-header">
+              <h2>Списки желаний</h2>
+              <p>Мечты и желания каждого и общие</p>
+            </div>
+
+            <div class="wishes-tabs">
+              <button class="tab-btn active" data-tab="personal">Личные</button>
+              <button class="tab-btn" data-tab="shared">Общие</button>
+            </div>
+
+            <div class="wishes-container">
+              <div id="personalWishes" class="wishes-tab active">
+                <div class="wishes-columns">
+                  <div class="wish-column">
+                    <h3>Ваши желания</h3>
+                    <ul id="yourWishes" class="wishes-list">
+
+                    </ul>
+                    <button class="btn-secondary add-wish-btn" data-list="your">Добавить</button>
+                  </div>
+                  <div class="wish-column">
+                    <h3>Желания партнёра</h3>
+                    <ul id="partnerWishes" class="wishes-list">
+
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div id="sharedWishes" class="wishes-tab">
+                <h3>Общие желания</h3>
+                <ul id="commonWishes" class="wishes-list">
+
+                </ul>
+                <button class="btn-secondary add-wish-btn" data-list="common">Добавить желание</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="games" class="section">
+          <div class="container">
+            <div class="section-header">
+              <h2>Игры для двоих</h2>
+              <p>Весёлые игры для укрепления связи</p>
+            </div>
+
+            <!-- Игры -->
+            <div class="games-grid">
+
+              <div class="game-card" data-game="whoami">
+                <h3>🕵️ Кто я?</h3>
+                <p>Угадай персонажа по наводящим вопросам</p>
+                <button id="startGameBtn" class="btn-primary">Играть</button>
+              </div>
+
+              <div class="game-card" data-game="story">
+                <h3>📖 Совместный рассказ</h3>
+                <p>Создайте историю вместе, заполняя пропуски</p>
+                <button id="startStoryGameBtn" class="btn-primary">Играть</button>
+              </div>
+
+              <div class="game-card" data-game="drawing">
+                <h3>🎨 Совместный рисунок</h3>
+                <p>По очереди добавляйте элементы к общему рисунку</p>
+                <button class="btn-primary">Играть</button>
+              </div>
+
+            </div>
+
+          </section>
+
+        
+      </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modalBody">
+          <!-- Modal content will be inserted here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification hidden">
+      <div class="notification-content">
+        <span id="notificationText"></span>
+        <button id="closeNotification">&times;</button>
+      </div>
+    </div>
+
+    <!-- Подключение основного скрипта приложения -->
+    <script type="module" src="main.js"></script>
+
+  </body>
+</html>
